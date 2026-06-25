@@ -6,7 +6,6 @@
 <title>Tips</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
 body {
   background:#000;
   height:100dvh;
@@ -17,12 +16,87 @@ body {
   overflow:hidden;
 }
 
+/* AUTH SCREEN */
+.auth-screen {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  flex:1;
+  padding:32px 24px;
+  gap:16px;
+}
+.auth-logo { font-size:48px; margin-bottom:8px; }
+.auth-title { font-size:28px; font-weight:700; margin-bottom:4px; }
+.auth-sub { font-size:14px; color:rgba(255,255,255,0.4); margin-bottom:16px; }
+.auth-input {
+  width:100%;
+  background:#1c1c1e;
+  border:none;
+  border-radius:14px;
+  padding:16px 18px;
+  color:white;
+  font-size:16px;
+  font-family:-apple-system,sans-serif;
+  outline:none;
+}
+.auth-input::placeholder { color:rgba(255,255,255,0.25); }
+.auth-btn {
+  width:100%;
+  background:#ff9f0a;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  color:white;
+  font-size:17px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+  margin-top:4px;
+}
+.auth-btn:active { opacity:0.75; }
+.auth-switch {
+  font-size:14px;
+  color:rgba(255,255,255,0.4);
+  cursor:pointer;
+  margin-top:4px;
+}
+.auth-switch span { color:#ff9f0a; font-weight:600; }
+.auth-error {
+  font-size:13px;
+  color:#ff3b30;
+  text-align:center;
+  min-height:18px;
+}
+
+/* APP */
+.app-screen { display:none; flex-direction:column; flex:1; overflow:hidden; }
+.app-screen.visible { display:flex; }
+
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 20px 0;
+  flex-shrink:0;
+}
+.user-email { font-size:12px; color:rgba(255,255,255,0.3); }
+.logout-btn {
+  background:transparent;
+  border:none;
+  color:#ff3b30;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+}
+
 /* TABS */
 .tabs {
   display:flex;
   background:#1c1c1e;
   padding:6px;
-  margin:12px 16px 0;
+  margin:10px 16px 0;
   border-radius:12px;
   gap:4px;
   flex-shrink:0;
@@ -60,7 +134,6 @@ body {
   justify-content:flex-end;
   word-break:break-all;
 }
-
 .grid {
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -68,7 +141,6 @@ body {
   padding:12px 16px;
   flex-shrink:0;
 }
-
 button.key {
   border:none;
   border-radius:50%;
@@ -134,20 +206,6 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
   margin-bottom:12px;
   outline:none;
 }
-.modal-btns { display:flex; gap:10px; }
-.modal-btns button {
-  flex:1;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-  font-family:-apple-system,sans-serif;
-}
-.btn-cancel { background:#2c2c2e; color:white; }
-.btn-save   { background:#ff9f0a; color:white; }
-
 .type-toggle { display:flex; gap:8px; margin-bottom:12px; }
 .type-btn {
   flex:1; padding:12px; border:none; border-radius:12px;
@@ -157,16 +215,19 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
 }
 .type-btn.active { background:#ff9f0a; color:white; }
 .type-btn:active { opacity:0.7; }
+.modal-btns { display:flex; gap:10px; }
+.modal-btns button {
+  flex:1; padding:14px; border:none; border-radius:12px;
+  font-size:16px; font-weight:600; cursor:pointer;
+  font-family:-apple-system,sans-serif;
+}
+.btn-cancel { background:#2c2c2e; color:white; }
+.btn-save   { background:#ff9f0a; color:white; }
 
 /* NOTES */
-.notes-header {
-  padding:16px 20px 8px;
-  font-size:28px;
-  font-weight:700;
-  flex-shrink:0;
-}
+.notes-header { padding:16px 20px 8px; font-size:28px; font-weight:700; flex-shrink:0; }
 .total-bar {
-  margin:0 16px 12px;
+  margin:0 16px 8px;
   background:#1c1c1e;
   border-radius:14px;
   padding:14px 18px;
@@ -177,12 +238,7 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
 }
 .total-bar span { font-size:14px; color:rgba(255,255,255,0.45); }
 .total-bar strong { font-size:22px; font-weight:600; color:#ff9f0a; }
-
-.entries {
-  flex:1;
-  overflow-y:auto;
-  padding:0 16px 20px;
-}
+.entries { flex:1; overflow-y:auto; padding:0 16px 20px; }
 .entry {
   background:#1c1c1e;
   border-radius:14px;
@@ -195,91 +251,94 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
 .entry-info { flex:1; }
 .entry-label { font-size:15px; font-weight:500; }
 .entry-time  { font-size:12px; color:rgba(255,255,255,0.35); margin-top:2px; }
-.entry-amount { font-size:20px; font-weight:600; color:#30d158; margin-right:12px; }
+.entry-amount { font-size:20px; font-weight:600; margin-right:12px; }
 .del-btn {
-  background:#ff3b30;
-  border:none;
-  border-radius:8px;
-  color:white;
-  font-size:13px;
-  font-weight:600;
-  padding:6px 12px;
-  cursor:pointer;
-  font-family:-apple-system,sans-serif;
+  background:#ff3b30; border:none; border-radius:8px;
+  color:white; font-size:13px; font-weight:600;
+  padding:6px 12px; cursor:pointer; font-family:-apple-system,sans-serif;
 }
 .del-btn:active { opacity:0.7; }
-.empty {
-  text-align:center;
-  color:rgba(255,255,255,0.25);
-  font-size:16px;
-  margin-top:60px;
-}
-
+.empty { text-align:center; color:rgba(255,255,255,0.25); font-size:16px; margin-top:60px; }
 .clear-all {
-  margin:0 16px 12px;
-  background:transparent;
-  border:1px solid #ff3b30;
-  border-radius:14px;
-  padding:12px;
-  color:#ff3b30;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer;
-  font-family:-apple-system,sans-serif;
-  flex-shrink:0;
+  margin:0 16px 8px;
+  background:transparent; border:1px solid #ff3b30;
+  border-radius:14px; padding:12px; color:#ff3b30;
+  font-size:14px; font-weight:600; cursor:pointer;
+  font-family:-apple-system,sans-serif; flex-shrink:0;
 }
 .clear-all:active { opacity:0.6; }
+.loading { text-align:center; color:rgba(255,255,255,0.3); font-size:14px; margin-top:40px; }
 </style>
 </head>
 <body>
 
-<div class="tabs">
-  <button class="tab active" onclick="showPage('calc')">Calculator</button>
-  <button class="tab" onclick="showPage('notes')">Tips Log</button>
+<!-- AUTH SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-logo">💵</div>
+  <div class="auth-title">Tips Calculator</div>
+  <div class="auth-sub" id="authSub">Sign in to sync your tips</div>
+  <input class="auth-input" type="email" id="authEmail" placeholder="Email">
+  <input class="auth-input" type="password" id="authPass" placeholder="Password">
+  <div class="auth-error" id="authError"></div>
+  <button class="auth-btn" id="authMainBtn" onclick="authAction()">Sign In</button>
+  
 </div>
 
-<!-- CALCULATOR PAGE -->
-<div class="page active" id="calcPage">
-  <div id="display">0</div>
-  <button class="save-btn" onclick="openModal()">+ Save to log</button>
-  <div class="grid">
-    <button class="key func" onclick="ac()" id="acBtn">AC</button>
-    <button class="key func" onclick="sign()">+/−</button>
-    <button class="key func" onclick="pct()">%</button>
-    <button class="key op"   onclick="op('÷')">÷</button>
-    <button class="key" onclick="d('7')">7</button>
-    <button class="key" onclick="d('8')">8</button>
-    <button class="key" onclick="d('9')">9</button>
-    <button class="key op" onclick="op('×')">×</button>
-    <button class="key" onclick="d('4')">4</button>
-    <button class="key" onclick="d('5')">5</button>
-    <button class="key" onclick="d('6')">6</button>
-    <button class="key op" onclick="op('−')">−</button>
-    <button class="key" onclick="d('1')">1</button>
-    <button class="key" onclick="d('2')">2</button>
-    <button class="key" onclick="d('3')">3</button>
-    <button class="key op" onclick="op('+')">+</button>
-    <button class="key zero" onclick="d('0')">0</button>
-    <button class="key" onclick="d('.')">.</button>
-    <button class="key op" onclick="eq()">=</button>
+<!-- APP SCREEN -->
+<div class="app-screen" id="appScreen">
+  <div class="topbar">
+    <div class="user-email" id="userEmail"></div>
+    <button class="logout-btn" onclick="logout()">Sign out</button>
   </div>
-</div>
 
-<!-- NOTES PAGE -->
-<div class="page" id="notesPage">
-  <div class="notes-header">Tips Log</div>
-  <div class="total-bar">
-    <span>Total earned</span>
-    <strong id="totalEarned">$0.00</strong>
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('calc',this)">Calculator</button>
+    <button class="tab" onclick="showPage('notes',this)">Tips Log</button>
   </div>
-  <div class="total-bar" style="margin-top:-6px;">
-    <span>💵 Cash</span>
-    <strong id="totalCash" style="color:#30d158;">$0.00</strong>
-    <span style="margin:0 12px;">💳 Card</span>
-    <strong id="totalCard" style="color:#0a84ff;">$0.00</strong>
+
+  <!-- CALCULATOR PAGE -->
+  <div class="page active" id="calcPage">
+    <div id="display">0</div>
+    <button class="save-btn" onclick="openModal()">+ Save to log</button>
+    <div class="grid">
+      <button class="key func" onclick="ac()" id="acBtn">AC</button>
+      <button class="key func" onclick="sign()">+/−</button>
+      <button class="key func" onclick="pct()">%</button>
+      <button class="key op"   onclick="op('÷')">÷</button>
+      <button class="key" onclick="d('7')">7</button>
+      <button class="key" onclick="d('8')">8</button>
+      <button class="key" onclick="d('9')">9</button>
+      <button class="key op" onclick="op('×')">×</button>
+      <button class="key" onclick="d('4')">4</button>
+      <button class="key" onclick="d('5')">5</button>
+      <button class="key" onclick="d('6')">6</button>
+      <button class="key op" onclick="op('−')">−</button>
+      <button class="key" onclick="d('1')">1</button>
+      <button class="key" onclick="d('2')">2</button>
+      <button class="key" onclick="d('3')">3</button>
+      <button class="key op" onclick="op('+')">+</button>
+      <button class="key zero" onclick="d('0')">0</button>
+      <button class="key" onclick="d('.')">.</button>
+      <button class="key op" onclick="eq()">=</button>
+    </div>
   </div>
-  <button class="clear-all" onclick="clearAll()">Clear all</button>
-  <div class="entries" id="entries"></div>
+
+  <!-- NOTES PAGE -->
+  <div class="page" id="notesPage">
+    <div class="notes-header">Tips Log</div>
+    <div class="total-bar">
+      <span>Total earned</span>
+      <strong id="totalEarned">$0.00</strong>
+    </div>
+    <div class="total-bar">
+      <span>💵 Cash</span>
+      <strong id="totalCash" style="color:#30d158;">$0.00</strong>
+      <span style="margin:0 12px;">💳 Card</span>
+      <strong id="totalCard" style="color:#0a84ff;">$0.00</strong>
+    </div>
+    <button class="clear-all" onclick="clearAll()">Clear all</button>
+    <div class="entries" id="entries"><div class="loading">Loading...</div></div>
+  </div>
 </div>
 
 <!-- MODAL -->
@@ -300,73 +359,191 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
   </div>
 </div>
 
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB-mPSc5yXJHrKNvw51S6Z__lqwNwSmLlY",
+  authDomain: "dinoland-6b5c9.firebaseapp.com",
+  projectId: "dinoland-6b5c9",
+  storageBucket: "dinoland-6b5c9.firebasestorage.app",
+  messagingSenderId: "246367253146",
+  appId: "1:246367253146:web:af966cde2953e484d26523",
+  measurementId: "G-X8QY7V0GBN"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+
+// AUTH STATE
+onAuthStateChanged(auth, user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('appScreen').classList.add('visible');
+    document.getElementById('userEmail').textContent = user.email;
+    loadEntries();
+  } else {
+    currentUser = null;
+    document.getElementById('authScreen').style.display = 'flex';
+    document.getElementById('appScreen').classList.remove('visible');
+  }
+});
+
+// AUTH ACTIONS
+let isSignUp = false;
+window.toggleMode = () => {
+  isSignUp = !isSignUp;
+  document.getElementById('authSub').textContent = isSignUp ? 'Create your account' : 'Sign in to sync your tips';
+  document.getElementById('authMainBtn').textContent = isSignUp ? 'Sign Up' : 'Sign In';
+  document.getElementById('authSwitch').innerHTML = isSignUp
+    ? 'Already have an account? <span onclick="toggleMode()">Sign In</span>'
+    : 'No account? <span onclick="toggleMode()">Sign Up</span>';
+  document.getElementById('authError').textContent = '';
+};
+
+window.authAction = async () => {
+  const email = document.getElementById('authEmail').value.trim();
+  const pass = document.getElementById('authPass').value;
+  const errEl = document.getElementById('authError');
+  errEl.textContent = '';
+  try {
+    if (isSignUp) {
+      await createUserWithEmailAndPassword(auth, email, pass);
+    } else {
+      await signInWithEmailAndPassword(auth, email, pass);
+    }
+  } catch(e) {
+    const code = e.code || '';
+    if(code==='auth/invalid-credential'||code==='auth/wrong-password'||code==='auth/user-not-found')
+      errEl.textContent='Incorrect email or password.';
+    else if(code==='auth/invalid-email')
+      errEl.textContent='Invalid email address.';
+    else if(code==='auth/too-many-requests')
+      errEl.textContent='Too many attempts. Try again later.';
+    else
+      errEl.textContent='Something went wrong. Try again.';
+  }
+};
+
+window.logout = async () => {
+  await signOut(auth);
+};
+
+// FIRESTORE
+async function loadEntries() {
+  if (!currentUser) return;
+  const q = query(collection(db, 'users', currentUser.uid, 'tips'), orderBy('ts', 'desc'));
+  const snap = await getDocs(q);
+  const entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderEntries(entries);
+}
+
+window.saveEntry = async () => {
+  if (!currentUser) return;
+  const amount = parseFloat(window._cur) || 0;
+  if (!amount) return;
+  const label = document.getElementById('labelInput').value.trim() || 'Tip';
+  await addDoc(collection(db, 'users', currentUser.uid, 'tips'), {
+    label, amount, type: window._tipType,
+    time: new Date().toLocaleString(),
+    ts: Date.now()
+  });
+  closeModal();
+  loadEntries();
+};
+
+window.deleteEntry = async (id) => {
+  if (!currentUser) return;
+  await deleteDoc(doc(db, 'users', currentUser.uid, 'tips', id));
+  loadEntries();
+};
+
+window.clearAll = async () => {
+  if (!currentUser) return;
+  if (!confirm('Clear all entries?')) return;
+  const q = query(collection(db, 'users', currentUser.uid, 'tips'));
+  const snap = await getDocs(q);
+  await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+  loadEntries();
+};
+
+function renderEntries(entries) {
+  const container = document.getElementById('entries');
+  const total = entries.reduce((s,e) => s+e.amount, 0);
+  const cash  = entries.filter(e => e.type==='cash'||!e.type).reduce((s,e) => s+e.amount, 0);
+  const card  = entries.filter(e => e.type==='card').reduce((s,e) => s+e.amount, 0);
+  document.getElementById('totalEarned').textContent = '$'+total.toFixed(2);
+  document.getElementById('totalCash').textContent   = '$'+cash.toFixed(2);
+  document.getElementById('totalCard').textContent   = '$'+card.toFixed(2);
+  if (!entries.length) { container.innerHTML='<div class="empty">No tips saved yet</div>'; return; }
+  container.innerHTML = entries.map(e => `
+    <div class="entry">
+      <div class="entry-info">
+        <div class="entry-label">${e.type==='card'?'💳':'💵'} ${e.label}</div>
+        <div class="entry-time">${e.time}</div>
+      </div>
+      <span class="entry-amount" style="color:${e.type==='card'?'#0a84ff':'#30d158'}">\$${e.amount.toFixed(2)}</span>
+      <button class="del-btn" onclick="deleteEntry('${e.id}')">Remove</button>
+    </div>
+  `).join('');
+}
+
+// expose loadEntries for tab switch
+window._loadEntries = loadEntries;
+</script>
+
 <script>
-// --- CALCULATOR ---
+// CALCULATOR
 let cur='0', prev=null, oper=null, next=false, typed=false;
+window._cur = '0';
 
 function disp(){
   const el=document.getElementById('display');
   el.textContent='$'+cur;
+  window._cur = cur;
   const len=cur.replace('-','').length;
   el.style.fontSize=len>9?'52px':len>6?'72px':'96px';
   document.getElementById('acBtn').textContent=typed?'C':'AC';
 }
-
 function d(v){
   typed=true;
   if(next){cur=v==='.'?'0.':v;next=false;}
-  else{
-    if(v==='.'&&cur.includes('.'))return;
-    cur=cur==='0'&&v!=='.'?v:cur.length<12?cur+v:cur;
-  }
+  else{ if(v==='.'&&cur.includes('.'))return; cur=cur==='0'&&v!=='.'?v:cur.length<12?cur+v:cur; }
   disp();
 }
-
-function ac(){
-  if(typed&&cur!=='0'){cur='0';typed=false;}
-  else{cur='0';prev=null;oper=null;next=false;typed=false;}
-  disp();
-}
-
+function ac(){ if(typed&&cur!=='0'){cur='0';typed=false;} else{cur='0';prev=null;oper=null;next=false;typed=false;} disp(); }
 function sign(){ cur=cur.startsWith('-')?cur.slice(1):cur==='0'?'0':'-'+cur; disp(); }
 function pct(){ cur=String(parseFloat(cur)/100); disp(); }
-
-function op(o){
-  typed=false;
-  if(prev!==null&&!next)calc(false);
-  prev=parseFloat(cur);oper=o;next=true;
-  disp();
-}
-
-function calc(final=true){
+function op(o){ typed=false; if(prev!==null&&!next)calc(false); prev=parseFloat(cur);oper=o;next=true; disp(); }
+function calc(fin=true){
   if(prev===null||!oper)return;
-  const a=prev,b=parseFloat(cur);
-  let r;
-  if(oper==='+')r=a+b;
-  if(oper==='−')r=a-b;
-  if(oper==='×')r=a*b;
-  if(oper==='÷')r=b!==0?a/b:0;
+  const a=prev,b=parseFloat(cur); let r;
+  if(oper==='+')r=a+b; if(oper==='−')r=a-b; if(oper==='×')r=a*b; if(oper==='÷')r=b?a/b:0;
   cur=String(parseFloat(r.toFixed(8)));
-  if(final){prev=null;oper=null;}
-  next=true;typed=false;
-  disp();
+  if(fin){prev=null;oper=null;} next=true;typed=false; disp();
 }
-
 function eq(){ calc(true); }
 
-// --- MODAL ---
-let tipType = 'cash';
+// MODAL
+let tipType='cash';
+window._tipType='cash';
 
 function selectType(t){
-  tipType = t;
-  document.getElementById('btnCash').classList.toggle('active', t==='cash');
-  document.getElementById('btnCard').classList.toggle('active', t==='card');
+  tipType=t; window._tipType=t;
+  document.getElementById('btnCash').classList.toggle('active',t==='cash');
+  document.getElementById('btnCard').classList.toggle('active',t==='card');
 }
-
 function openModal(){
   document.getElementById('modalAmount').textContent='$'+cur;
   document.getElementById('labelInput').value='';
-  tipType='cash';
+  tipType='cash'; window._tipType='cash';
   document.getElementById('btnCash').classList.add('active');
   document.getElementById('btnCard').classList.remove('active');
   document.getElementById('modalBg').classList.add('show');
@@ -374,65 +551,15 @@ function openModal(){
 }
 function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
 
-// --- STORAGE ---
-function getEntries(){ try{return JSON.parse(localStorage.getItem('tips')||'[]');}catch{return[];} }
-function setEntries(e){ localStorage.setItem('tips',JSON.stringify(e)); }
-
-function saveEntry(){
-  const amount=parseFloat(cur)||0;
-  const label=document.getElementById('labelInput').value.trim()||'Tip';
-  const entries=getEntries();
-  entries.unshift({id:Date.now(),label,amount,type:tipType,time:new Date().toLocaleString()});
-  setEntries(entries);
-  closeModal();
-  renderEntries();
-}
-
-function deleteEntry(id){
-  setEntries(getEntries().filter(e=>e.id!==id));
-  renderEntries();
-}
-
-function clearAll(){
-  if(confirm('Clear all entries?')){ setEntries([]); renderEntries(); }
-}
-
-function renderEntries(){
-  const entries=getEntries();
-  const container=document.getElementById('entries');
-  const total=entries.reduce((s,e)=>s+e.amount,0);
-  const cash=entries.filter(e=>e.type==='cash'||!e.type).reduce((s,e)=>s+e.amount,0);
-  const card=entries.filter(e=>e.type==='card').reduce((s,e)=>s+e.amount,0);
-  document.getElementById('totalEarned').textContent='$'+total.toFixed(2);
-  document.getElementById('totalCash').textContent='$'+cash.toFixed(2);
-  document.getElementById('totalCard').textContent='$'+card.toFixed(2);
-
-  if(!entries.length){
-    container.innerHTML='<div class="empty">No tips saved yet</div>';
-    return;
-  }
-  container.innerHTML=entries.map(e=>`
-    <div class="entry">
-      <div class="entry-info">
-        <div class="entry-label">${e.type==='card'?'💳':'💵'} ${e.label}</div>
-        <div class="entry-time">${e.time}</div>
-      </div>
-      <span class="entry-amount" style="color:${e.type==='card'?'#0a84ff':'#30d158'}">$${e.amount.toFixed(2)}</span>
-      <button class="del-btn" onclick="deleteEntry(${e.id})">Remove</button>
-    </div>
-  `).join('');
-}
-
-function showPage(p){
-  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+function showPage(p, el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   document.getElementById(p+'Page').classList.add('active');
-  event.target.classList.add('active');
-  if(p==='notes')renderEntries();
+  el.classList.add('active');
+  if(p==='notes' && window._loadEntries) window._loadEntries();
 }
 
 disp();
-renderEntries();
 </script>
 </body>
 </html>
