@@ -342,27 +342,25 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
   </div>
 
   <!-- QR PAGE -->
-  <div class="page" id="qrPage">
-    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;gap:20px;">
+  <div class="page" id="qrPage" style="overflow-y:auto;">
+    <div style="display:flex;flex-direction:column;align-items:center;padding:24px 20px 40px;gap:18px;">
       <div style="font-size:22px;font-weight:700;text-align:center;">Leave us a review!</div>
       <div style="font-size:15px;color:rgba(255,255,255,0.4);text-align:center;">Ask your customer to scan this QR code</div>
-      <div style="background:white;border-radius:24px;padding:20px;width:100%;max-width:300px;">
-        <img src="https://raw.githubusercontent.com/dgwerz/tipscalc/main/qr.png" 
+      <div style="background:white;border-radius:24px;padding:18px;width:100%;max-width:280px;">
+        <img src="https://raw.githubusercontent.com/dgwerz/tipscalc/main/qr.png"
              onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22260%22 height=%22260%22><rect width=%22260%22 height=%22260%22 fill=%22%23f2f2f2%22/><text x=%22130%22 y=%22130%22 text-anchor=%22middle%22 font-size=%2214%22 fill=%22%23999%22>QR not loaded</text></svg>'"
-             style="width:100%;border-radius:12px;" alt="QR Code">
+             style="width:100%;border-radius:12px;display:block;" alt="QR Code">
       </div>
       <div style="font-size:20px;font-weight:800;letter-spacing:1px;color:white;">DINOLAND CAFÉ</div>
-      <div style="display:flex;gap:4px;">
-        <span style="color:#ff9f0a;font-size:24px;">★★★★★</span>
-      </div>
+      <div style="color:#ff9f0a;font-size:24px;">★★★★★</div>
       <div style="font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Myrtle Beach · Google Reviews</div>
-      <div style="display:flex;align-items:center;gap:20px;background:#1c1c1e;border-radius:20px;padding:16px 28px;">
-        <button onclick="changeReviews(-1)" style="background:#2c2c2e;border:none;color:white;font-size:28px;width:48px;height:48px;border-radius:50%;cursor:pointer;font-family:-apple-system,sans-serif;">−</button>
+      <div style="display:flex;align-items:center;gap:24px;background:#1c1c1e;border-radius:20px;padding:18px 32px;width:100%;justify-content:center;">
+        <button onclick="changeReviews(-1)" style="background:#2c2c2e;border:none;color:white;font-size:28px;width:52px;height:52px;border-radius:50%;cursor:pointer;font-family:-apple-system,sans-serif;flex-shrink:0;">−</button>
         <div style="text-align:center;">
-          <div id="reviewCount" style="font-size:42px;font-weight:700;color:#ff9f0a;line-height:1;">0</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:2px;">reviews tracked</div>
+          <div id="reviewCount" style="font-size:44px;font-weight:700;color:#ff9f0a;line-height:1;">0</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;">reviews tracked</div>
         </div>
-        <button onclick="changeReviews(1)" style="background:#ff9f0a;border:none;color:white;font-size:28px;width:48px;height:48px;border-radius:50%;cursor:pointer;font-family:-apple-system,sans-serif;">+</button>
+        <button onclick="changeReviews(1)" style="background:#ff9f0a;border:none;color:white;font-size:28px;width:52px;height:52px;border-radius:50%;cursor:pointer;font-family:-apple-system,sans-serif;flex-shrink:0;">+</button>
       </div>
     </div>
   </div>
