@@ -148,6 +148,16 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
 .btn-cancel { background:#2c2c2e; color:white; }
 .btn-save   { background:#ff9f0a; color:white; }
 
+.type-toggle { display:flex; gap:8px; margin-bottom:12px; }
+.type-btn {
+  flex:1; padding:12px; border:none; border-radius:12px;
+  background:#2c2c2e; color:rgba(255,255,255,0.5);
+  font-size:15px; font-weight:600; cursor:pointer;
+  font-family:-apple-system,sans-serif; transition:all 0.15s;
+}
+.type-btn.active { background:#ff9f0a; color:white; }
+.type-btn:active { opacity:0.7; }
+
 /* NOTES */
 .notes-header {
   padding:16px 20px 8px;
@@ -262,6 +272,12 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
     <span>Total earned</span>
     <strong id="totalEarned">$0.00</strong>
   </div>
+  <div class="total-bar" style="margin-top:-6px;">
+    <span>💵 Cash</span>
+    <strong id="totalCash" style="color:#30d158;">$0.00</strong>
+    <span style="margin:0 12px;">💳 Card</span>
+    <strong id="totalCard" style="color:#0a84ff;">$0.00</strong>
+  </div>
   <button class="clear-all" onclick="clearAll()">Clear all</button>
   <div class="entries" id="entries"></div>
 </div>
@@ -273,6 +289,10 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
     <p id="modalAmount" style="font-size:28px;font-weight:200;color:white;margin-bottom:8px;">$0</p>
     <p>Add a label (optional)</p>
     <input id="labelInput" type="text" placeholder="e.g. Table 5, lunch shift…" maxlength="40">
+    <div class="type-toggle">
+      <button class="type-btn active" id="btnCash" onclick="selectType('cash')">💵 Cash</button>
+      <button class="type-btn" id="btnCard" onclick="selectType('card')">💳 Card</button>
+    </div>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-save" onclick="saveEntry()">Save</button>
@@ -335,9 +355,20 @@ function calc(final=true){
 function eq(){ calc(true); }
 
 // --- MODAL ---
+let tipType = 'cash';
+
+function selectType(t){
+  tipType = t;
+  document.getElementById('btnCash').classList.toggle('active', t==='cash');
+  document.getElementById('btnCard').classList.toggle('active', t==='card');
+}
+
 function openModal(){
   document.getElementById('modalAmount').textContent='$'+cur;
   document.getElementById('labelInput').value='';
+  tipType='cash';
+  document.getElementById('btnCash').classList.add('active');
+  document.getElementById('btnCard').classList.remove('active');
   document.getElementById('modalBg').classList.add('show');
   setTimeout(()=>document.getElementById('labelInput').focus(),300);
 }
@@ -351,7 +382,7 @@ function saveEntry(){
   const amount=parseFloat(cur)||0;
   const label=document.getElementById('labelInput').value.trim()||'Tip';
   const entries=getEntries();
-  entries.unshift({id:Date.now(),label,amount,time:new Date().toLocaleString()});
+  entries.unshift({id:Date.now(),label,amount,type:tipType,time:new Date().toLocaleString()});
   setEntries(entries);
   closeModal();
   renderEntries();
@@ -370,7 +401,11 @@ function renderEntries(){
   const entries=getEntries();
   const container=document.getElementById('entries');
   const total=entries.reduce((s,e)=>s+e.amount,0);
+  const cash=entries.filter(e=>e.type==='cash'||!e.type).reduce((s,e)=>s+e.amount,0);
+  const card=entries.filter(e=>e.type==='card').reduce((s,e)=>s+e.amount,0);
   document.getElementById('totalEarned').textContent='$'+total.toFixed(2);
+  document.getElementById('totalCash').textContent='$'+cash.toFixed(2);
+  document.getElementById('totalCard').textContent='$'+card.toFixed(2);
 
   if(!entries.length){
     container.innerHTML='<div class="empty">No tips saved yet</div>';
@@ -379,10 +414,10 @@ function renderEntries(){
   container.innerHTML=entries.map(e=>`
     <div class="entry">
       <div class="entry-info">
-        <div class="entry-label">${e.label}</div>
+        <div class="entry-label">${e.type==='card'?'💳':'💵'} ${e.label}</div>
         <div class="entry-time">${e.time}</div>
       </div>
-      <span class="entry-amount">$${e.amount.toFixed(2)}</span>
+      <span class="entry-amount" style="color:${e.type==='card'?'#0a84ff':'#30d158'}">$${e.amount.toFixed(2)}</span>
       <button class="del-btn" onclick="deleteEntry(${e.id})">Remove</button>
     </div>
   `).join('');
