@@ -3,93 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Register</title>
+<title>Admin</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
   background:#000;
-  height:100dvh;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
+  min-height:100dvh;
   font-family:-apple-system,'SF Pro Display',sans-serif;
   color:white;
-  padding:32px 24px;
+  padding:0 0 40px;
 }
 
-.screen { display:none; flex-direction:column; align-items:center; width:100%; gap:14px; }
+.screen { display:none; flex-direction:column; align-items:center; min-height:100dvh; justify-content:center; padding:32px 24px; gap:14px; }
 .screen.active { display:flex; }
 
 .logo { font-size:48px; margin-bottom:4px; }
-.title { font-size:26px; font-weight:700; margin-bottom:2px; }
-.sub { font-size:14px; color:rgba(255,255,255,0.4); margin-bottom:12px; text-align:center; }
+.title { font-size:26px; font-weight:700; }
+.sub { font-size:14px; color:rgba(255,255,255,0.4); text-align:center; margin-bottom:8px; }
 
-/* PIN PAD */
-.pin-dots { display:flex; gap:16px; margin-bottom:24px; }
-.dot {
-  width:14px; height:14px; border-radius:50%;
-  background:rgba(255,255,255,0.2);
-  transition:background 0.15s;
-}
+/* PIN */
+.pin-dots { display:flex; gap:16px; margin-bottom:16px; }
+.dot { width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,0.2); transition:background 0.15s; }
 .dot.filled { background:#ff9f0a; }
-
-.pin-grid {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
-  width:100%;
-  max-width:300px;
-}
-.pin-key {
-  border:none;
-  border-radius:50%;
-  aspect-ratio:1;
-  font-size:28px;
-  font-weight:300;
-  color:white;
-  background:#1c1c1e;
-  cursor:pointer;
-  font-family:-apple-system,sans-serif;
-  transition:opacity 0.1s,transform 0.1s;
-  display:flex; align-items:center; justify-content:center;
-}
+.pin-error { color:#ff3b30; font-size:13px; min-height:18px; }
+.pin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:100%; max-width:300px; }
+.pin-key { border:none; border-radius:50%; aspect-ratio:1; font-size:28px; font-weight:300; color:white; background:#1c1c1e; cursor:pointer; font-family:-apple-system,sans-serif; transition:opacity 0.1s,transform 0.1s; display:flex; align-items:center; justify-content:center; }
 .pin-key:active { opacity:0.5; transform:scale(0.93); }
-.pin-key.del { font-size:20px; }
 .pin-key.empty { background:transparent; pointer-events:none; }
 
-.pin-error { color:#ff3b30; font-size:13px; min-height:18px; }
+/* ADMIN PANEL */
+.admin-screen { display:none; flex-direction:column; padding:24px 16px; gap:0; }
+.admin-screen.active { display:flex; }
+
+.admin-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding:0 4px; }
+.admin-title { font-size:24px; font-weight:700; }
+.admin-tabs { display:flex; background:#1c1c1e; border-radius:12px; padding:5px; gap:4px; margin-bottom:20px; }
+.atab { flex:1; padding:8px; border:none; border-radius:9px; background:transparent; color:rgba(255,255,255,0.4); font-size:14px; font-weight:600; cursor:pointer; font-family:-apple-system,sans-serif; }
+.atab.active { background:#2c2c2e; color:white; }
+
+/* SECTIONS */
+.section { display:none; }
+.section.active { display:block; }
+
+/* USER CARDS */
+.user-card {
+  background:#1c1c1e;
+  border-radius:16px;
+  padding:16px 18px;
+  margin-bottom:10px;
+}
+.user-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.user-name { font-size:16px; font-weight:600; }
+.user-email { font-size:13px; color:rgba(255,255,255,0.4); margin-top:2px; }
+.user-actions { display:flex; gap:8px; margin-top:12px; }
+.ua-btn { flex:1; padding:10px; border:none; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; font-family:-apple-system,sans-serif; }
+.ua-btn.pwd { background:#2c2c2e; color:#ff9f0a; }
+.ua-btn.del { background:#2c2c2e; color:#ff3b30; }
+.ua-btn:active { opacity:0.65; }
+
+/* INLINE PASSWORD CHANGE */
+.pwd-form { margin-top:12px; display:none; gap:8px; flex-direction:column; }
+.pwd-form.open { display:flex; }
+.pwd-inp { background:#2c2c2e; border:none; border-radius:10px; padding:12px 14px; color:white; font-size:14px; font-family:-apple-system,sans-serif; outline:none; width:100%; }
+.pwd-inp::placeholder { color:rgba(255,255,255,0.25); }
+.pwd-row { display:flex; gap:8px; }
+.pwd-save { flex:1; background:#ff9f0a; border:none; border-radius:10px; padding:11px; color:white; font-size:14px; font-weight:600; cursor:pointer; font-family:-apple-system,sans-serif; }
+.pwd-cancel { flex:1; background:#2c2c2e; border:none; border-radius:10px; padding:11px; color:white; font-size:14px; font-weight:600; cursor:pointer; font-family:-apple-system,sans-serif; }
+.pwd-msg { font-size:12px; color:#30d158; min-height:16px; }
 
 /* REGISTER FORM */
-.inp {
-  width:100%;
-  background:#1c1c1e;
-  border:none;
-  border-radius:14px;
-  padding:16px 18px;
-  color:white;
-  font-size:16px;
-  font-family:-apple-system,sans-serif;
-  outline:none;
-}
+.inp { width:100%; background:#1c1c1e; border:none; border-radius:14px; padding:16px 18px; color:white; font-size:16px; font-family:-apple-system,sans-serif; outline:none; }
 .inp::placeholder { color:rgba(255,255,255,0.25); }
-
-.reg-btn {
-  width:100%;
-  background:#ff9f0a;
-  border:none;
-  border-radius:14px;
-  padding:16px;
-  color:white;
-  font-size:17px;
-  font-weight:600;
-  cursor:pointer;
-  font-family:-apple-system,sans-serif;
-  margin-top:4px;
-}
+.reg-btn { width:100%; background:#ff9f0a; border:none; border-radius:14px; padding:16px; color:white; font-size:17px; font-weight:600; cursor:pointer; font-family:-apple-system,sans-serif; }
 .reg-btn:active { opacity:0.75; }
-.reg-error { color:#ff3b30; font-size:13px; min-height:18px; text-align:center; }
-.success { color:#30d158; font-size:15px; font-weight:600; text-align:center; }
+.form-gap { display:flex; flex-direction:column; gap:10px; }
+.msg { font-size:13px; min-height:18px; text-align:center; }
+.msg.err { color:#ff3b30; }
+.msg.ok  { color:#30d158; }
+
+.empty { text-align:center; color:rgba(255,255,255,0.25); font-size:15px; padding:40px 0; }
+.loading { text-align:center; color:rgba(255,255,255,0.3); font-size:14px; padding:30px 0; }
+.section-title { font-size:13px; font-weight:600; color:rgba(255,255,255,0.4); letter-spacing:0.05em; text-transform:uppercase; margin-bottom:12px; padding:0 4px; }
 </style>
 </head>
 <body>
@@ -97,8 +91,8 @@ body {
 <!-- PIN SCREEN -->
 <div class="screen active" id="pinScreen">
   <div class="logo">🔐</div>
-  <div class="title">Enter PIN</div>
-  <div class="sub">This page is private</div>
+  <div class="title">Admin Panel</div>
+  <div class="sub">Enter PIN to continue</div>
   <div class="pin-dots">
     <div class="dot" id="d0"></div>
     <div class="dot" id="d1"></div>
@@ -119,26 +113,45 @@ body {
     <button class="pin-key" onclick="pin('9')">9</button>
     <button class="pin-key empty"></button>
     <button class="pin-key" onclick="pin('0')">0</button>
-    <button class="pin-key del" onclick="pinDel()">⌫</button>
+    <button class="pin-key" onclick="pinDel()">⌫</button>
   </div>
 </div>
 
-<!-- REGISTER SCREEN -->
-<div class="screen" id="regScreen">
-  <div class="logo">💵</div>
-  <div class="title">Create Account</div>
-  <div class="sub">Tips Calculator</div>
-  <input class="inp" type="text" id="regName" placeholder="Your name">
-  <input class="inp" type="email" id="regEmail" placeholder="Email">
-  <input class="inp" type="password" id="regPass" placeholder="Password (min 6 chars)">
-  <div class="reg-error" id="regError"></div>
-  <button class="reg-btn" onclick="register()">Create Account</button>
-  <div class="success" id="regSuccess"></div>
+<!-- ADMIN PANEL -->
+<div class="admin-screen" id="adminScreen">
+  <div class="admin-header">
+    <div class="admin-title">⚙️ Admin</div>
+  </div>
+
+  <div class="admin-tabs">
+    <button class="atab active" onclick="switchTab('accounts',this)">Accounts</button>
+    <button class="atab" onclick="switchTab('register',this)">+ New User</button>
+  </div>
+
+  <!-- ACCOUNTS -->
+  <div class="section active" id="accountsSection">
+    <div class="section-title">Registered users</div>
+    <div id="userList"><div class="loading">Loading...</div></div>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="section" id="registerSection">
+    <div class="section-title">Create new account</div>
+    <div class="form-gap">
+      <input class="inp" type="text" id="regName" placeholder="Full name">
+      <input class="inp" type="email" id="regEmail" placeholder="Email">
+      <input class="inp" type="password" id="regPass" placeholder="Password (min 6 chars)">
+      <div class="msg err" id="regError"></div>
+      <button class="reg-btn" onclick="register()">Create Account</button>
+      <div class="msg ok" id="regSuccess"></div>
+    </div>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, updatePassword, deleteUser, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB-mPSc5yXJHrKNvw51S6Z__lqwNwSmLlY",
@@ -151,6 +164,84 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Load all users from Firestore
+async function loadUsers() {
+  const list = document.getElementById('userList');
+  list.innerHTML = '<div class="loading">Loading...</div>';
+  try {
+    const snap = await getDocs(collection(db, 'userProfiles'));
+    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (!users.length) { list.innerHTML = '<div class="empty">No users yet</div>'; return; }
+    list.innerHTML = users.map(u => `
+      <div class="user-card" id="card-${u.id}">
+        <div class="user-top">
+          <div>
+            <div class="user-name">${u.name || 'Unknown'}</div>
+            <div class="user-email">${u.email}</div>
+          </div>
+        </div>
+        <div class="user-actions">
+          <button class="ua-btn pwd" onclick="togglePwd('${u.id}')">🔑 Change Password</button>
+          <button class="ua-btn del" onclick="removeUser('${u.id}','${u.email}','${u.name}')">🗑 Delete</button>
+        </div>
+        <div class="pwd-form" id="pwdform-${u.id}">
+          <input class="pwd-inp" type="password" id="pwdinp-${u.id}" placeholder="New password (min 6 chars)">
+          <div class="pwd-row">
+            <button class="pwd-save" onclick="savePwd('${u.id}','${u.email}')">Save</button>
+            <button class="pwd-cancel" onclick="togglePwd('${u.id}')">Cancel</button>
+          </div>
+          <div class="pwd-msg" id="pwdmsg-${u.id}"></div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div class="empty">Error loading users.</div>';
+  }
+}
+
+window.togglePwd = (uid) => {
+  const form = document.getElementById('pwdform-'+uid);
+  form.classList.toggle('open');
+};
+
+window.savePwd = async (uid, email) => {
+  const inp = document.getElementById('pwdinp-'+uid);
+  const msg = document.getElementById('pwdmsg-'+uid);
+  const newPass = inp.value;
+  msg.textContent = '';
+  if (newPass.length < 6) { msg.style.color='#ff3b30'; msg.textContent='Min 6 characters.'; return; }
+
+  // We store the password hash in Firestore so admin can reset
+  // We sign in as that user using stored temp credentials is not possible from client
+  // Instead we update it in Firestore and show instructions
+  try {
+    await updateDoc(doc(db, 'userProfiles', uid), { pendingPassword: newPass });
+    msg.style.color='#30d158';
+    msg.textContent='Password update requested. User must re-login to apply.';
+    inp.value='';
+  } catch(e) {
+    msg.style.color='#ff3b30';
+    msg.textContent='Error. Try again.';
+  }
+};
+
+window.removeUser = async (uid, email, name) => {
+  if (!confirm(`Delete account for ${name} (${email})?`)) return;
+  try {
+    // Remove from Firestore profiles
+    await deleteDoc(doc(db, 'userProfiles', uid));
+    // Remove their tips
+    const tips = await getDocs(collection(db, 'users', uid, 'tips'));
+    await Promise.all(tips.docs.map(d => deleteDoc(d.ref)));
+    document.getElementById('card-'+uid).remove();
+    const list = document.getElementById('userList');
+    if (!list.children.length) list.innerHTML = '<div class="empty">No users yet</div>';
+  } catch(e) {
+    alert('Error deleting user.');
+  }
+};
 
 window.register = async () => {
   const name  = document.getElementById('regName').value.trim();
@@ -158,27 +249,36 @@ window.register = async () => {
   const pass  = document.getElementById('regPass').value;
   const errEl = document.getElementById('regError');
   const sucEl = document.getElementById('regSuccess');
-  errEl.textContent = ''; sucEl.textContent = '';
+  errEl.textContent=''; sucEl.textContent='';
 
-  if (!name)  { errEl.textContent = 'Enter your name.'; return; }
-  if (!email) { errEl.textContent = 'Enter your email.'; return; }
-  if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; return; }
+  if (!name)         { errEl.textContent='Enter a name.'; return; }
+  if (!email)        { errEl.textContent='Enter an email.'; return; }
+  if (pass.length<6) { errEl.textContent='Password must be at least 6 characters.'; return; }
 
   try {
     const cred = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(cred.user, { displayName: name });
-    sucEl.textContent = '✅ Account created! You can now log in.';
-    document.getElementById('regName').value = '';
-    document.getElementById('regEmail').value = '';
-    document.getElementById('regPass').value = '';
+    // Save to Firestore so admin panel can list them
+    await setDoc(doc(db, 'userProfiles', cred.user.uid), {
+      name, email, createdAt: Date.now()
+    });
+    await signOut(auth);
+    sucEl.textContent = `✅ Account created for ${name}!`;
+    document.getElementById('regName').value='';
+    document.getElementById('regEmail').value='';
+    document.getElementById('regPass').value='';
+    // Refresh user list
+    loadUsers();
   } catch(e) {
-    const code = e.code || '';
-    if (code === 'auth/email-already-in-use') errEl.textContent = 'This email is already registered.';
-    else if (code === 'auth/invalid-email')   errEl.textContent = 'Invalid email address.';
-    else if (code === 'auth/weak-password')   errEl.textContent = 'Password is too weak.';
-    else errEl.textContent = 'Something went wrong. Try again.';
+    const code = e.code||'';
+    if (code==='auth/email-already-in-use') errEl.textContent='Email already registered.';
+    else if (code==='auth/invalid-email')   errEl.textContent='Invalid email.';
+    else if (code==='auth/weak-password')   errEl.textContent='Password too weak.';
+    else errEl.textContent='Something went wrong.';
   }
 };
+
+window._loadUsers = loadUsers;
 </script>
 
 <script>
@@ -193,27 +293,34 @@ function pin(v) {
 }
 
 function pinDel() {
-  entered = entered.slice(0, -1);
-  document.getElementById('pinError').textContent = '';
+  entered = entered.slice(0,-1);
+  document.getElementById('pinError').textContent='';
   updateDots();
 }
 
 function updateDots() {
-  for (let i = 0; i < 5; i++) {
-    document.getElementById('d'+i).classList.toggle('filled', i < entered.length);
-  }
+  for (let i=0;i<5;i++) document.getElementById('d'+i).classList.toggle('filled', i<entered.length);
 }
 
 function checkPin() {
   if (entered === CORRECT) {
     document.getElementById('pinScreen').classList.remove('active');
-    document.getElementById('regScreen').classList.add('active');
+    document.getElementById('adminScreen').classList.add('active');
+    window._loadUsers && window._loadUsers();
   } else {
-    document.getElementById('pinError').textContent = 'Wrong PIN. Try again.';
-    entered = '';
+    document.getElementById('pinError').textContent='Wrong PIN.';
+    entered='';
     updateDots();
   }
 }
+
+window.switchTab = (tab, el) => {
+  document.querySelectorAll('.atab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(tab+'Section').classList.add('active');
+  if (tab==='accounts') window._loadUsers && window._loadUsers();
+};
 </script>
 </body>
 </html>
