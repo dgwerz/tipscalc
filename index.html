@@ -356,6 +356,14 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
         <span style="color:#ff9f0a;font-size:24px;">★★★★★</span>
       </div>
       <div style="font-size:13px;color:rgba(255,255,255,0.35);text-align:center;">Myrtle Beach · Google Reviews</div>
+      <div style="display:flex;align-items:center;gap:20px;background:#1c1c1e;border-radius:20px;padding:16px 28px;">
+        <button onclick="changeReviews(-1)" style="background:#2c2c2e;border:none;color:white;font-size:28px;width:48px;height:48px;border-radius:50%;cursor:pointer;font-family:-apple-system,sans-serif;">−</button>
+        <div style="text-align:center;">
+          <div id="reviewCount" style="font-size:42px;font-weight:700;color:#ff9f0a;line-height:1;">0</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-top:2px;">reviews tracked</div>
+        </div>
+        <button onclick="changeReviews(1)" style="background:#ff9f0a;border:none;color:white;font-size:28px;width:48px;height:48px;border-radius:50%;cursor:pointer;font-family:-apple-system,sans-serif;">+</button>
+      </div>
     </div>
   </div>
 </div>
@@ -516,6 +524,32 @@ function renderEntries(entries) {
 
 // expose loadEntries for tab switch
 window._loadEntries = loadEntries;
+
+// REVIEW COUNTER
+async function loadReviewCount() {
+  if (!currentUser) return;
+  try {
+    const { getDoc, doc: fsDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const ref = fsDoc(db, 'meta', 'reviews');
+    const snap = await getDoc(ref);
+    const count = snap.exists() ? (snap.data().count || 0) : 0;
+    document.getElementById('reviewCount').textContent = count;
+  } catch(e) {}
+}
+
+window.changeReviews = async (delta) => {
+  try {
+    const { getDoc, doc: fsDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    const ref = fsDoc(db, 'meta', 'reviews');
+    const snap = await getDoc(ref);
+    const current = snap.exists() ? (snap.data().count || 0) : 0;
+    const next = Math.max(0, current + delta);
+    await setDoc(ref, { count: next });
+    document.getElementById('reviewCount').textContent = next;
+  } catch(e) {}
+};
+
+window._loadReviewCount = loadReviewCount;
 </script>
 
 <script>
@@ -576,6 +610,7 @@ function showPage(p, el){
   document.getElementById(p+'Page').classList.add('active');
   el.classList.add('active');
   if(p==='notes' && window._loadEntries) window._loadEntries();
+  if(p==='qr' && window._loadReviewCount) window._loadReviewCount();
 }
 
 disp();
