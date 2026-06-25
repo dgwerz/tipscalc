@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tips</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  background:#000;
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  font-family:-apple-system,'SF Pro Display',sans-serif;
+  color:white;
+  overflow:hidden;
+}
+
+/* TABS */
+.tabs {
+  display:flex;
+  background:#1c1c1e;
+  padding:6px;
+  margin:12px 16px 0;
+  border-radius:12px;
+  gap:4px;
+  flex-shrink:0;
+}
+.tab {
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:9px;
+  background:transparent;
+  color:rgba(255,255,255,0.4);
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+  transition:all 0.2s;
+}
+.tab.active { background:#2c2c2e; color:white; }
+
+/* PAGES */
+.page { display:none; flex:1; flex-direction:column; overflow:hidden; }
+.page.active { display:flex; }
+
+/* CALCULATOR */
+#display {
+  padding:0 28px 12px;
+  text-align:right;
+  font-size:96px;
+  font-weight:200;
+  letter-spacing:-3px;
+  line-height:1;
+  flex:1;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-end;
+  word-break:break-all;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  padding:12px 16px;
+  flex-shrink:0;
+}
+
+button.key {
+  border:none;
+  border-radius:50%;
+  aspect-ratio:1;
+  font-size:32px;
+  font-weight:400;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+  color:white;
+  background:#333333;
+  transition:opacity 0.08s,transform 0.08s;
+  width:100%;
+}
+button.key:active { opacity:0.6; transform:scale(0.94); }
+.op   { background:#ff9f0a !important; }
+.func { background:#a5a5a5 !important; color:#000 !important; font-size:20px !important; font-weight:600 !important; }
+.zero { grid-column:span 2; border-radius:50px !important; text-align:left !important; padding-left:34px; aspect-ratio:unset !important; padding-top:22px; padding-bottom:22px; }
+
+.save-btn {
+  margin:0 16px 12px;
+  background:#1c1c1e;
+  border:none;
+  border-radius:14px;
+  padding:16px;
+  color:#ff9f0a;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+  flex-shrink:0;
+}
+.save-btn:active { opacity:0.7; }
+
+/* MODAL */
+.modal-bg {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:100;
+  align-items:flex-end;
+  justify-content:center;
+  padding-bottom:env(safe-area-inset-bottom,20px);
+}
+.modal-bg.show { display:flex; }
+.modal {
+  background:#1c1c1e;
+  border-radius:20px 20px 0 0;
+  padding:24px 20px 32px;
+  width:100%;
+}
+.modal h3 { font-size:17px; font-weight:600; margin-bottom:6px; }
+.modal p  { font-size:13px; color:rgba(255,255,255,0.4); margin-bottom:16px; }
+.modal input {
+  width:100%;
+  background:#2c2c2e;
+  border:none;
+  border-radius:12px;
+  padding:14px 16px;
+  color:white;
+  font-size:16px;
+  font-family:-apple-system,sans-serif;
+  margin-bottom:12px;
+  outline:none;
+}
+.modal-btns { display:flex; gap:10px; }
+.modal-btns button {
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+}
+.btn-cancel { background:#2c2c2e; color:white; }
+.btn-save   { background:#ff9f0a; color:white; }
+
+/* NOTES */
+.notes-header {
+  padding:16px 20px 8px;
+  font-size:28px;
+  font-weight:700;
+  flex-shrink:0;
+}
+.total-bar {
+  margin:0 16px 12px;
+  background:#1c1c1e;
+  border-radius:14px;
+  padding:14px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-shrink:0;
+}
+.total-bar span { font-size:14px; color:rgba(255,255,255,0.45); }
+.total-bar strong { font-size:22px; font-weight:600; color:#ff9f0a; }
+
+.entries {
+  flex:1;
+  overflow-y:auto;
+  padding:0 16px 20px;
+}
+.entry {
+  background:#1c1c1e;
+  border-radius:14px;
+  padding:14px 18px;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.entry-info { flex:1; }
+.entry-label { font-size:15px; font-weight:500; }
+.entry-time  { font-size:12px; color:rgba(255,255,255,0.35); margin-top:2px; }
+.entry-amount { font-size:20px; font-weight:600; color:#30d158; margin-right:12px; }
+.del-btn {
+  background:#ff3b30;
+  border:none;
+  border-radius:8px;
+  color:white;
+  font-size:13px;
+  font-weight:600;
+  padding:6px 12px;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+}
+.del-btn:active { opacity:0.7; }
+.empty {
+  text-align:center;
+  color:rgba(255,255,255,0.25);
+  font-size:16px;
+  margin-top:60px;
+}
+
+.clear-all {
+  margin:0 16px 12px;
+  background:transparent;
+  border:1px solid #ff3b30;
+  border-radius:14px;
+  padding:12px;
+  color:#ff3b30;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:-apple-system,sans-serif;
+  flex-shrink:0;
+}
+.clear-all:active { opacity:0.6; }
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <button class="tab active" onclick="showPage('calc')">Calculator</button>
+  <button class="tab" onclick="showPage('notes')">Tips Log</button>
+</div>
+
+<!-- CALCULATOR PAGE -->
+<div class="page active" id="calcPage">
+  <div id="display">0</div>
+  <button class="save-btn" onclick="openModal()">+ Save to log</button>
+  <div class="grid">
+    <button class="key func" onclick="ac()" id="acBtn">AC</button>
+    <button class="key func" onclick="sign()">+/−</button>
+    <button class="key func" onclick="pct()">%</button>
+    <button class="key op"   onclick="op('÷')">÷</button>
+    <button class="key" onclick="d('7')">7</button>
+    <button class="key" onclick="d('8')">8</button>
+    <button class="key" onclick="d('9')">9</button>
+    <button class="key op" onclick="op('×')">×</button>
+    <button class="key" onclick="d('4')">4</button>
+    <button class="key" onclick="d('5')">5</button>
+    <button class="key" onclick="d('6')">6</button>
+    <button class="key op" onclick="op('−')">−</button>
+    <button class="key" onclick="d('1')">1</button>
+    <button class="key" onclick="d('2')">2</button>
+    <button class="key" onclick="d('3')">3</button>
+    <button class="key op" onclick="op('+')">+</button>
+    <button class="key zero" onclick="d('0')">0</button>
+    <button class="key" onclick="d('.')">.</button>
+    <button class="key op" onclick="eq()">=</button>
+  </div>
+</div>
+
+<!-- NOTES PAGE -->
+<div class="page" id="notesPage">
+  <div class="notes-header">Tips Log</div>
+  <div class="total-bar">
+    <span>Total earned</span>
+    <strong id="totalEarned">$0.00</strong>
+  </div>
+  <button class="clear-all" onclick="clearAll()">Clear all</button>
+  <div class="entries" id="entries"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3>Save to log</h3>
+    <p id="modalAmount" style="font-size:28px;font-weight:200;color:white;margin-bottom:8px;">$0</p>
+    <p>Add a label (optional)</p>
+    <input id="labelInput" type="text" placeholder="e.g. Table 5, lunch shift…" maxlength="40">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveEntry()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// --- CALCULATOR ---
+let cur='0', prev=null, oper=null, next=false, typed=false;
+
+function disp(){
+  const el=document.getElementById('display');
+  el.textContent='$'+cur;
+  const len=cur.replace('-','').length;
+  el.style.fontSize=len>9?'52px':len>6?'72px':'96px';
+  document.getElementById('acBtn').textContent=typed?'C':'AC';
+}
+
+function d(v){
+  typed=true;
+  if(next){cur=v==='.'?'0.':v;next=false;}
+  else{
+    if(v==='.'&&cur.includes('.'))return;
+    cur=cur==='0'&&v!=='.'?v:cur.length<12?cur+v:cur;
+  }
+  disp();
+}
+
+function ac(){
+  if(typed&&cur!=='0'){cur='0';typed=false;}
+  else{cur='0';prev=null;oper=null;next=false;typed=false;}
+  disp();
+}
+
+function sign(){ cur=cur.startsWith('-')?cur.slice(1):cur==='0'?'0':'-'+cur; disp(); }
+function pct(){ cur=String(parseFloat(cur)/100); disp(); }
+
+function op(o){
+  typed=false;
+  if(prev!==null&&!next)calc(false);
+  prev=parseFloat(cur);oper=o;next=true;
+  disp();
+}
+
+function calc(final=true){
+  if(prev===null||!oper)return;
+  const a=prev,b=parseFloat(cur);
+  let r;
+  if(oper==='+')r=a+b;
+  if(oper==='−')r=a-b;
+  if(oper==='×')r=a*b;
+  if(oper==='÷')r=b!==0?a/b:0;
+  cur=String(parseFloat(r.toFixed(8)));
+  if(final){prev=null;oper=null;}
+  next=true;typed=false;
+  disp();
+}
+
+function eq(){ calc(true); }
+
+// --- MODAL ---
+function openModal(){
+  document.getElementById('modalAmount').textContent='$'+cur;
+  document.getElementById('labelInput').value='';
+  document.getElementById('modalBg').classList.add('show');
+  setTimeout(()=>document.getElementById('labelInput').focus(),300);
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
+
+// --- STORAGE ---
+function getEntries(){ try{return JSON.parse(localStorage.getItem('tips')||'[]');}catch{return[];} }
+function setEntries(e){ localStorage.setItem('tips',JSON.stringify(e)); }
+
+function saveEntry(){
+  const amount=parseFloat(cur)||0;
+  const label=document.getElementById('labelInput').value.trim()||'Tip';
+  const entries=getEntries();
+  entries.unshift({id:Date.now(),label,amount,time:new Date().toLocaleString()});
+  setEntries(entries);
+  closeModal();
+  renderEntries();
+}
+
+function deleteEntry(id){
+  setEntries(getEntries().filter(e=>e.id!==id));
+  renderEntries();
+}
+
+function clearAll(){
+  if(confirm('Clear all entries?')){ setEntries([]); renderEntries(); }
+}
+
+function renderEntries(){
+  const entries=getEntries();
+  const container=document.getElementById('entries');
+  const total=entries.reduce((s,e)=>s+e.amount,0);
+  document.getElementById('totalEarned').textContent='$'+total.toFixed(2);
+
+  if(!entries.length){
+    container.innerHTML='<div class="empty">No tips saved yet</div>';
+    return;
+  }
+  container.innerHTML=entries.map(e=>`
+    <div class="entry">
+      <div class="entry-info">
+        <div class="entry-label">${e.label}</div>
+        <div class="entry-time">${e.time}</div>
+      </div>
+      <span class="entry-amount">$${e.amount.toFixed(2)}</span>
+      <button class="del-btn" onclick="deleteEntry(${e.id})">Remove</button>
+    </div>
+  `).join('');
+}
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById(p+'Page').classList.add('active');
+  event.target.classList.add('active');
+  if(p==='notes')renderEntries();
+}
+
+disp();
+renderEntries();
+</script>
+</body>
+</html>
