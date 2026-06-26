@@ -372,7 +372,7 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
       <!-- INPUTS -->
       <div style="background:#1c1c1e;border-radius:16px;overflow:hidden;">
         <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:15px;color:rgba(255,255,255,0.6);">Net Sales</span>
+          <span style="font-size:15px;color:rgba(255,255,255,0.6);">Grand Total Sales</span>
           <div style="display:flex;align-items:center;gap:4px;">
             <span style="color:rgba(255,255,255,0.4);">$</span>
             <input id="toSales" type="number" inputmode="decimal" placeholder="0.00"
@@ -380,7 +380,15 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
           </div>
         </div>
         <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:15px;color:rgba(255,255,255,0.6);">Cash Payments</span>
+          <span style="font-size:15px;color:rgba(255,255,255,0.6);">Cash you have</span>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="color:rgba(255,255,255,0.4);">$</span>
+            <input id="toCashHave" type="number" inputmode="decimal" placeholder="0.00"
+              style="background:transparent;border:none;color:white;font-size:17px;font-weight:500;width:110px;text-align:right;outline:none;" oninput="calcTipout()">
+          </div>
+        </div>
+        <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:15px;color:rgba(255,255,255,0.6);">Cash payments (checks)</span>
           <div style="display:flex;align-items:center;gap:4px;">
             <span style="color:rgba(255,255,255,0.4);">$</span>
             <input id="toCash" type="number" inputmode="decimal" placeholder="0.00"
@@ -396,12 +404,8 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
           </div>
         </div>
         <div style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:15px;color:rgba(255,255,255,0.6);">💵 Cash Tips</span>
-          <div style="display:flex;align-items:center;gap:4px;">
-            <span style="color:rgba(255,255,255,0.4);">$</span>
-            <input id="toCashTips" type="number" inputmode="decimal" placeholder="0.00"
-              style="background:transparent;border:none;color:white;font-size:17px;font-weight:500;width:110px;text-align:right;outline:none;" oninput="calcTipout()">
-          </div>
+          <span style="font-size:15px;color:rgba(255,255,255,0.6);">💵 Cash Tips (auto)</span>
+          <span id="autoCashTips" style="font-size:15px;color:rgba(255,255,255,0.5);">$0.00</span>
         </div>
       </div>
 
@@ -430,7 +434,7 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
           <span id="rCashTips" style="font-size:15px;color:rgba(255,255,255,0.8);font-weight:500;">$0.00</span>
         </div>
         <div style="padding:14px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;">
-          <span style="font-size:15px;color:rgba(255,255,255,0.5);">Cash Payments</span>
+          <span style="font-size:15px;color:rgba(255,255,255,0.5);">Cash Received from Customers</span>
           <span id="rCashPay" style="font-size:15px;color:rgba(255,255,255,0.8);font-weight:500;">$0.00</span>
         </div>
         <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);">
@@ -726,47 +730,39 @@ disp();
 <script>
 function calcTipout(){
   const sales    = parseFloat(document.getElementById('toSales').value)||0;
+  const cashHave = parseFloat(document.getElementById('toCashHave').value)||0;
   const cashPay  = parseFloat(document.getElementById('toCash').value)||0;
   const cardTips = parseFloat(document.getElementById('toCardTips').value)||0;
-  const cashTips = parseFloat(document.getElementById('toCashTips').value)||0;
   const rate     = parseFloat(document.getElementById('toRate').value)||3.5;
 
-  const tipout = sales * (rate/100);
+  const tipout     = sales * (rate/100);
+  const cashTips   = cashHave - cashPay;   // cash tips = what you have minus what checks cost
+  const allTips    = cardTips + cashTips;
+  const total      = allTips - tipout;
+  const actionEl   = document.getElementById('rAction');
 
-  let cashOut = 0;   // cash server hands to manager
-  let cashKeep = 0;  // cash server keeps from cash payments
-  let cardDeduct = 0; // deducted from card tips payout
-
-  if (cashPay >= tipout) {
-    // Server gives tipout from cash payments, keeps the rest
-    cashOut = tipout;
-    cashKeep = cashPay - tipout;
-    cardDeduct = 0;
-  } else {
-    // Cash payments not enough — server gives all cash + owes the rest from card tips
-    cashOut = cashPay;
-    cashKeep = 0;
-    cardDeduct = tipout - cashPay;
-  }
-
-  const total = cardTips - cardDeduct + cashKeep + cashTips;
-
-  // Update breakdown label
-  const actionEl = document.getElementById('rAction');
-  if (cashPay >= tipout) {
-    actionEl.textContent = '✅ Give $'+cashOut.toFixed(2)+' cash to manager, keep $'+cashKeep.toFixed(2);
+  if (total >= 0) {
+    actionEl.textContent = '✅ You take home $' + total.toFixed(2);
     actionEl.style.color = '#30d158';
   } else {
-    actionEl.textContent = '⚠️ Give all $'+cashOut.toFixed(2)+' cash + $'+cardDeduct.toFixed(2)+' deducted from card tips';
-    actionEl.style.color = '#ff9f0a';
+    actionEl.textContent = '⚠️ You owe restaurant $' + Math.abs(total).toFixed(2);
+    actionEl.style.color = '#ff3b30';
   }
 
   document.getElementById('rTipout').textContent   = '−$'+tipout.toFixed(2);
-  document.getElementById('rCardNet').textContent  = '$'+cardTips.toFixed(2)+(cardDeduct>0?' (−$'+cardDeduct.toFixed(2)+')':'');
-  document.getElementById('rCashTips').textContent = '$'+cashTips.toFixed(2);
+  document.getElementById('rCardNet').textContent  = '$'+cardTips.toFixed(2);
+  const ct = cashTips>=0?cashTips:0;
+  document.getElementById('rCashTips').textContent = '$'+ct.toFixed(2);
+  document.getElementById('autoCashTips').textContent = '$'+ct.toFixed(2);
   document.getElementById('rCashPay').textContent  = '$'+cashPay.toFixed(2);
-  document.getElementById('rTotal').textContent    = '$'+Math.max(0,total).toFixed(2);
+  document.getElementById('rTotal').textContent    = (total>=0?'$':'−$')+Math.abs(total).toFixed(2);
   document.getElementById('rTotal').style.color    = total >= 0 ? '#30d158' : '#ff3b30';
+}
+
+function resetTipout(){
+  ['toSales','toCashHave','toCash','toCardTips'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('toRate').value='3.5';
+  calcTipout();
 }
 
 function resetTipout(){
