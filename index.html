@@ -433,6 +433,9 @@ button.key:active { opacity:0.6; transform:scale(0.94); }
           <span style="font-size:15px;color:rgba(255,255,255,0.5);">Cash Payments</span>
           <span id="rCashPay" style="font-size:15px;color:rgba(255,255,255,0.8);font-weight:500;">$0.00</span>
         </div>
+        <div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.07);">
+          <div id="rAction" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.4);">Enter values to see what to do</div>
+        </div>
         <div style="padding:18px 16px;display:flex;justify-content:space-between;align-items:center;">
           <span style="font-size:17px;font-weight:600;">You take home</span>
           <span id="rTotal" style="font-size:28px;font-weight:700;color:#30d158;">$0.00</span>
@@ -728,11 +731,38 @@ function calcTipout(){
   const cashTips = parseFloat(document.getElementById('toCashTips').value)||0;
   const rate     = parseFloat(document.getElementById('toRate').value)||3.5;
 
-  const tipout   = sales * (rate/100);
-  const total    = cardTips + cashTips + cashPay - tipout;
+  const tipout = sales * (rate/100);
+
+  let cashOut = 0;   // cash server hands to manager
+  let cashKeep = 0;  // cash server keeps from cash payments
+  let cardDeduct = 0; // deducted from card tips payout
+
+  if (cashPay >= tipout) {
+    // Server gives tipout from cash payments, keeps the rest
+    cashOut = tipout;
+    cashKeep = cashPay - tipout;
+    cardDeduct = 0;
+  } else {
+    // Cash payments not enough — server gives all cash + owes the rest from card tips
+    cashOut = cashPay;
+    cashKeep = 0;
+    cardDeduct = tipout - cashPay;
+  }
+
+  const total = cardTips - cardDeduct + cashKeep + cashTips;
+
+  // Update breakdown label
+  const actionEl = document.getElementById('rAction');
+  if (cashPay >= tipout) {
+    actionEl.textContent = '✅ Give $'+cashOut.toFixed(2)+' cash to manager, keep $'+cashKeep.toFixed(2);
+    actionEl.style.color = '#30d158';
+  } else {
+    actionEl.textContent = '⚠️ Give all $'+cashOut.toFixed(2)+' cash + $'+cardDeduct.toFixed(2)+' deducted from card tips';
+    actionEl.style.color = '#ff9f0a';
+  }
 
   document.getElementById('rTipout').textContent   = '−$'+tipout.toFixed(2);
-  document.getElementById('rCardNet').textContent  = '$'+cardTips.toFixed(2);
+  document.getElementById('rCardNet').textContent  = '$'+cardTips.toFixed(2)+(cardDeduct>0?' (−$'+cardDeduct.toFixed(2)+')':'');
   document.getElementById('rCashTips').textContent = '$'+cashTips.toFixed(2);
   document.getElementById('rCashPay').textContent  = '$'+cashPay.toFixed(2);
   document.getElementById('rTotal').textContent    = '$'+Math.max(0,total).toFixed(2);
